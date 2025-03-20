@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu d'Échecs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Jeu d'Échecs</h1>
+        
+        <div class="game-options">
+            <div class="mode-selector">
+                <label for="game-mode">Mode de jeu :</label>
+                <select id="game-mode">
+                    <option value="human">Joueur contre Joueur</option>
+                    <option value="ai">Joueur contre IA</option>
+                </select>
+            </div>
+            
+            <div class="difficulty-selector" id="difficulty-container" style="display: none;">
+                <label for="ai-difficulty">Difficulté :</label>
+                <select id="ai-difficulty">
+                    <option value="easy">Facile</option>
+                    <option value="medium" selected>Moyen</option>
+                    <option value="hard">Difficile</option>
+                </select>
+            </div>
+            
+            <div class="player-color" id="color-container" style="display: none;">
+                <label for="player-color">Jouer avec :</label>
+                <select id="player-color">
+                    <option value="white" selected>Blancs</option>
+                    <option value="black">Noirs</option>
+                </select>
+            </div>
+            
+            <button id="rules-button" class="rules-button">Règles du jeu</button>
+        </div>
+        
+        <div class="game-info">
+            <div id="status">Tour des Blancs</div>
+            <div id="captured-pieces">
+                <div id="captured-white" class="captured"></div>
+                <div id="captured-black" class="captured"></div>
+            </div>
+        </div>
+        
+        <div id="chessboard"></div>
+        
+        <div class="controls">
+            <button id="new-game">Nouvelle Partie</button>
+            <button id="undo-move">Annuler Coup</button>
+            <div class="thinking" id="ai-thinking" style="display: none;">
+                <span class="thinking-text">L'IA réfléchit...</span>
+                <div class="thinking-animation"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fenêtre modale pour les règles du jeu -->
+    <div id="rules-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Règles du jeu d'échecs</h2>
+            
+            <div class="rules-section">
+                <h3>Introduction</h3>
+                <p>Les échecs se jouent à deux joueurs sur un plateau de 64 cases alternativement claires et foncées. Chaque joueur dispose de 16 pièces : un roi, une dame, deux tours, deux fous, deux cavaliers et huit pions.</p>
+                <p>L'objectif du jeu est de mettre le roi adverse "échec et mat", ce qui signifie que le roi est menacé de capture (en échec) et ne peut éviter cette menace.</p>
+            </div>
+            
+            <div class="rules-section">
+                <h3>Déplacement des pièces</h3>
+                <ul>
+                    <li><strong>Le Roi (♔/♚) :</strong> Se déplace d'une case dans n'importe quelle direction.</li>
+                    <li><strong>La Dame (♕/♛) :</strong> Se déplace dans n'importe quelle direction (horizontale, verticale ou diagonale) d'autant de cases que souhaité.</li>
+                    <li><strong>La Tour (♖/♜) :</strong> Se déplace horizontalement ou verticalement d'autant de cases que souhaité.</li>
+                    <li><strong>Le Fou (♗/♝) :</strong> Se déplace en diagonale d'autant de cases que souhaité.</li>
+                    <li><strong>Le Cavalier (♘/♞) :</strong> Se déplace en "L" (deux cases dans une direction puis une case perpendiculairement). C'est la seule pièce qui peut sauter par-dessus les autres.</li>
+                    <li><strong>Le Pion (♙/♟) :</strong> Se déplace d'une case vers l'avant. Lors de son premier mouvement, il peut avancer de deux cases. Il capture les pièces en diagonale (une case en avant à gauche ou à droite). Lorsqu'un pion atteint la dernière rangée, il est promu en une autre pièce (généralement une dame).</li>
+                </ul>
+            </div>
+            
+            <div class="rules-section">
+                <h3>Coups spéciaux</h3>
+                <p><strong>Le roque :</strong> Permet de déplacer le roi de deux cases vers une tour et de placer la tour de l'autre côté du roi. Cela permet de mettre le roi en sécurité et d'activer la tour.</p>
+                <p><strong>La prise en passant :</strong> Si un pion avance de deux cases et se retrouve à côté d'un pion adverse, ce dernier peut le capturer "en passant" comme s'il n'avait avancé que d'une case.</p>
+                <p><strong>La promotion :</strong> Lorsqu'un pion atteint la dernière rangée adverse, il est promu en une pièce de plus grande valeur (dame, tour, fou ou cavalier).</p>
+            </div>
+            
+            <div class="rules-section">
+                <h3>Fin de partie</h3>
+                <p><strong>Échec :</strong> Lorsque le roi est menacé par une pièce adverse.</p>
+                <p><strong>Échec et mat :</strong> Lorsque le roi est en échec et qu'aucun coup ne peut le sortir de cette situation.</p>
+                <p><strong>Pat :</strong> Lorsqu'un joueur n'a aucun coup légal à jouer et que son roi n'est pas en échec. La partie est déclarée nulle.</p>
+                <p><strong>Nullité :</strong> La partie peut aussi être nulle par accord mutuel, par triple répétition de position, ou par la règle des 50 coups sans prise ni mouvement de pion.</p>
+            </div>
+            
+            <div class="rules-section">
+                <h3>Utilisation de l'interface</h3>
+                <p><strong>Mode de jeu :</strong> Choisissez entre jouer contre un ami ou contre l'IA.</p>
+                <p><strong>Difficulté :</strong> En mode IA, sélectionnez le niveau de difficulté.</p>
+                <p><strong>Couleur :</strong> Choisissez de jouer avec les pièces blanches ou noires.</p>
+                <p><strong>Déplacer une pièce :</strong> Cliquez sur une pièce pour la sélectionner, puis cliquez sur une case verte pour la déplacer.</p>
+                <p><strong>Annuler un coup :</strong> Utilisez le bouton "Annuler Coup" pour revenir en arrière.</p>
+                <p><strong>Nouvelle partie :</strong> Commencez une nouvelle partie avec le bouton "Nouvelle Partie".</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="chess.js"></script>
+    <script src="chess-api.js"></script>
+    <script src="ui.js"></script>
+</body>
+</html> 
