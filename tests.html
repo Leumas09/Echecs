@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests du Jeu d'Échecs</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #results {
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            color: green;
+        }
+        .failure {
+            color: red;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tests du Jeu d'Échecs</h1>
+    
+    <button id="run-tests">Exécuter les tests</button>
+    
+    <div id="results"></div>
+    
+    <!-- Importer les fichiers du jeu -->
+    <script src="chess.js"></script>
+    <script src="test-adapter.js"></script>
+    
+    <!-- Modification pour la capture de la console -->
+    <script>
+        // Rediriger la sortie console vers notre élément de résultats
+        const resultsElement = document.getElementById('results');
+        
+        // Sauvegarder les méthodes originales de la console
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        // Remplacer console.log
+        console.log = function(message) {
+            // Appeler la méthode originale
+            originalConsoleLog.apply(console, arguments);
+            
+            // Ajouter le message à notre élément de résultats
+            const logLine = document.createElement('div');
+            logLine.textContent = message;
+            if (message.includes('SUCCÈS')) {
+                logLine.className = 'success';
+            }
+            resultsElement.appendChild(logLine);
+        };
+        
+        // Remplacer console.error
+        console.error = function(message) {
+            // Appeler la méthode originale
+            originalConsoleError.apply(console, arguments);
+            
+            // Ajouter le message à notre élément de résultats
+            const errorLine = document.createElement('div');
+            errorLine.textContent = message;
+            errorLine.className = 'failure';
+            resultsElement.appendChild(errorLine);
+        };
+        
+        // Ajouter l'écouteur d'événements pour le bouton
+        document.getElementById('run-tests').addEventListener('click', function() {
+            // Effacer les résultats précédents
+            resultsElement.innerHTML = '';
+            
+            // Charger et exécuter les tests
+            const script = document.createElement('script');
+            script.src = 'chess.test.js';
+            document.body.appendChild(script);
+        });
+    </script>
+</body>
+</html> 
